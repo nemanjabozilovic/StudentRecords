@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">StudentRecords</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_date_of_birth">Date of Birth (YYYY-MM-DD)</string>
+    <string name="hint_department">Department</string>
+    <string name="hint_gpa">GPA</string>
+    <string name="hint_course_name">Course Name</string>
+    <string name="button_save_student">Save Student</string>
+    <string name="button_save_course">Save Course</string>
+    <string name="button_add_course">Add Course</string>
+    <string name="button_students">Students</string>
+    <string name="button_courses">Courses</string>
+    <string name="button_add_student">Add Student</string>
+    <string name="text_course_name">Course Name</string>
+    <string name="text_student_name">Student Name</string>
+    <string name="text_student_gpa">GPA: 3.5</string>
+</resources>
