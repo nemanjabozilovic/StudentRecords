@@ -39,6 +39,8 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CourseVi
         holder.tvCourseName.setText(course.getCourseName());
 
         holder.btnDelete.setOnClickListener(v -> listener.onDeleteClick(course.getId()));
+
+        holder.itemView.setOnClickListener(v -> listener.onCourseClick(course));
     }
 
     @Override
@@ -48,6 +50,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.CourseVi
 
     public interface OnCourseClickListener {
         void onDeleteClick(long courseId);
+        void onCourseClick(Course course);
     }
 
     public static class CourseViewHolder extends RecyclerView.ViewHolder {

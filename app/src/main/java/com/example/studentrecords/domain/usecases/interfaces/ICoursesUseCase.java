@@ -10,4 +10,5 @@ public interface ICoursesUseCase {
     boolean deleteCourse(long id);
     Course getCourseById(long id);
     boolean updateCourse(Course course);
+    boolean assignStudentToCourse(long courseId, long studentId);
 }

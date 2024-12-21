@@ -10,4 +10,5 @@ public interface IStudentsUseCase {
     boolean deleteStudent(long id);
     Student getStudentById(long id);
     boolean updateStudent(Student student);
+    List<String> getAllStudentNames();
 }

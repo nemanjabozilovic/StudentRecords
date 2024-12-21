@@ -48,6 +48,12 @@
             android:theme="@style/Theme.StudentRecords">
         </activity>
 
+        <activity
+            android:name=".ui.activities.AssignStudentActivity"
+            android:label="Add Course"
+            android:theme="@style/Theme.StudentRecords">
+        </activity>
+
     </application>
 
 </manifest>

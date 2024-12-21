@@ -23,13 +23,19 @@ public class AddCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_course);
 
+        initializeUIElements();
+        setUpListeners();
+    }
+
+    private void initializeUIElements() {
         etCourseName = findViewById(R.id.etCourseName);
+    }
+
+    private void setUpListeners() {
         Button btnSave = findViewById(R.id.btnSave);
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-
         CoursesRepository coursesRepository = new CoursesRepository(dbHelper);
-
         courseUseCase = new CoursesUseCase(coursesRepository);
 
         btnSave.setOnClickListener(v -> {
@@ -40,7 +46,7 @@ public class AddCourseActivity extends AppCompatActivity {
                 return;
             }
 
-            Course course = new Course(0, courseName);
+            Course course = new Course(0, courseName, null);
             long courseId = courseUseCase.addCourse(course);
 
             if (courseId != -1) {

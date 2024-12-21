@@ -5,9 +5,10 @@ public class Course {
     private String courseName;
     private Long studentId;
 
-    public Course(long id, String courseName) {
+    public Course(long id, String courseName, Long studentId) {
         this.id = id;
         this.courseName = courseName;
+        this.studentId = studentId;
     }
 
     public long getId() {

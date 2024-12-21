@@ -74,4 +74,8 @@ public class Student {
     public void setGpa(double gpa) {
         this.gpa = gpa;
     }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

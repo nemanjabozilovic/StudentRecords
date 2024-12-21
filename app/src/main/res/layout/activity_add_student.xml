@@ -4,43 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:fitsSystemWindows="true">
 
     <EditText
         android:id="@+id/etFirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_first_name"/>
+        android:hint="@string/hint_first_name"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/etLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_last_name"/>
+        android:hint="@string/hint_last_name"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_email"/>
+        android:hint="@string/hint_email"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/etDateOfBirth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_date_of_birth"/>
+        android:hint="@string/hint_date_of_birth"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/etDepartment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_department"/>
+        android:hint="@string/hint_department"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/etGPA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_gpa"/>
+        android:hint="@string/hint_gpa"
+        android:minHeight="48dp" />
 
     <Button
         android:id="@+id/btnSave"

@@ -16,4 +16,7 @@
     <string name="text_course_name">Course Name</string>
     <string name="text_student_name">Student Name</string>
     <string name="text_student_gpa">GPA: 3.5</string>
+    <string name="button_assign_student">Assign Student To Course</string>
+    <string name="button_assign">Assign</string>
+    <string name="action_sort">Sort By GPA</string>
 </resources>

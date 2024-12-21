@@ -37,4 +37,14 @@ public class CoursesUseCase implements ICoursesUseCase {
     public boolean updateCourse(Course course) {
         return coursesRepository.updateCourse(course);
     }
+
+    @Override
+    public boolean assignStudentToCourse(long courseId, long studentId) {
+        Course course = coursesRepository.getCourseById(courseId);
+        if (course != null) {
+            course.setStudentId(studentId);
+            return coursesRepository.updateCourse(course);
+        }
+        return false;
+    }
 }

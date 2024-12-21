@@ -36,9 +36,10 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Studen
     @Override
     public void onBindViewHolder(StudentViewHolder holder, int position) {
         Student student = students.get(position);
-        holder.tvStudentName.setText(student.getFirstName() + " " + student.getLastName());
+        holder.tvStudentName.setText(student.getFullName());
         holder.tvStudentGPA.setText("GPA: " + student.getGpa());
 
+        holder.itemView.setOnClickListener(v -> listener.onStudentClick(student));
         holder.btnDelete.setOnClickListener(v -> listener.onDeleteClick(student.getId()));
     }
 
@@ -48,6 +49,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.Studen
     }
 
     public interface OnStudentClickListener {
+        void onStudentClick(Student student);
         void onDeleteClick(long studentId);
     }
 

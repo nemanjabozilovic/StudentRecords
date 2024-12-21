@@ -2,7 +2,6 @@ package com.example.studentrecords.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,7 +15,6 @@ import com.example.studentrecords.data.repositories.StudentsRepository;
 import com.example.studentrecords.domain.usecases.implementation.StudentsUseCase;
 
 public class AddStudentActivity extends AppCompatActivity {
-
     private EditText etFirstName, etLastName, etEmail, etDateOfBirth, etDepartment, etGPA;
     private StudentsUseCase studentsUseCase;
 
@@ -25,17 +23,13 @@ public class AddStudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_student);
 
-        etFirstName = findViewById(R.id.etFirstName);
-        etLastName = findViewById(R.id.etLastName);
-        etEmail = findViewById(R.id.etEmail);
-        etDateOfBirth = findViewById(R.id.etDateOfBirth);
-        etDepartment = findViewById(R.id.etDepartment);
-        etGPA = findViewById(R.id.etGPA);
-        Button btnSave = findViewById(R.id.btnSave);
+        initializeUIElements();
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         StudentsRepository studentsRepository = new StudentsRepository(dbHelper);
         studentsUseCase = new StudentsUseCase(studentsRepository);
+
+        Button btnSave = findViewById(R.id.btnSave);
 
         btnSave.setOnClickListener(v -> {
             String firstName = etFirstName.getText().toString().trim();
@@ -70,5 +64,14 @@ public class AddStudentActivity extends AppCompatActivity {
                 Toast.makeText(AddStudentActivity.this, "Error adding student", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void initializeUIElements() {
+        etFirstName = findViewById(R.id.etFirstName);
+        etLastName = findViewById(R.id.etLastName);
+        etEmail = findViewById(R.id.etEmail);
+        etDateOfBirth = findViewById(R.id.etDateOfBirth);
+        etDepartment = findViewById(R.id.etDepartment);
+        etGPA = findViewById(R.id.etGPA);
     }
 }

@@ -5,6 +5,7 @@ import com.example.studentrecords.domain.repositories.IStudentsRepository;
 import com.example.studentrecords.domain.usecases.interfaces.IStudentsUseCase;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StudentsUseCase implements IStudentsUseCase {
     private final IStudentsRepository studentsRepository;
@@ -36,5 +37,13 @@ public class StudentsUseCase implements IStudentsUseCase {
     @Override
     public boolean updateStudent(Student student) {
         return studentsRepository.updateStudent(student);
+    }
+
+    @Override
+    public List<String> getAllStudentNames() {
+        List<Student> students = studentsRepository.getAllStudents();
+        return students.stream()
+                .map(Student::getFullName)
+                .collect(Collectors.toList());
     }
 }

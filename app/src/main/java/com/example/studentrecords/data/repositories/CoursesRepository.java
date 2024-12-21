@@ -21,12 +21,14 @@ public class CoursesRepository implements ICoursesRepository {
     private Course extractCourseFromCursor(Cursor cursor) {
         int idIndex = cursor.getColumnIndex("id");
         int courseNameIndex = cursor.getColumnIndex("course_name");
+        int courseStudentIdIndex = cursor.getColumnIndex("student_id");
 
-        if (idIndex >= 0 && courseNameIndex >= 0) {
+        if (idIndex >= 0 && courseNameIndex >= 0 && courseStudentIdIndex >= 0) {
             long id = cursor.getLong(idIndex);
             String courseName = cursor.getString(courseNameIndex);
+            Long courseStudentId = cursor.getLong(courseStudentIdIndex);
 
-            return new Course(id, courseName);
+            return new Course(id, courseName, courseStudentId);
         }
         return null;
     }
@@ -92,6 +94,7 @@ public class CoursesRepository implements ICoursesRepository {
 
         ContentValues values = new ContentValues();
         values.put("course_name", course.getCourseName());
+        values.put("student_id", course.getStudentId());
 
         int rowsUpdated = db.update(
                 "courses",
