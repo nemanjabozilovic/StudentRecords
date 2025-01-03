@@ -12,129 +12,110 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentsRepository implements IStudentsRepository {
+    private static final String TABLE_STUDENTS = "students";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_FIRST_NAME = "first_name";
+    private static final String COLUMN_LAST_NAME = "last_name";
+    private static final String COLUMN_DATE_OF_BIRTH = "date_of_birth";
+    private static final String COLUMN_EMAIL = "email";
+    private static final String COLUMN_DEPARTMENT = "department";
+    private static final String COLUMN_GPA = "gpa";
+
     private final DatabaseHelper dbHelper;
 
     public StudentsRepository(DatabaseHelper dbHelper) {
         this.dbHelper = dbHelper;
     }
 
+    private Student extractStudentFromCursor(Cursor cursor) {
+        long id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID));
+        String firstName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_FIRST_NAME));
+        String lastName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAST_NAME));
+        String dateOfBirth = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE_OF_BIRTH));
+        String email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL));
+        String department = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DEPARTMENT));
+        double gpa = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_GPA));
+
+        return new Student(id, firstName, lastName, dateOfBirth, email, department, gpa);
+    }
+
     @Override
     public long addStudent(Student student) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_FIRST_NAME, student.getFirstName());
+            values.put(COLUMN_LAST_NAME, student.getLastName());
+            values.put(COLUMN_DATE_OF_BIRTH, student.getDateOfBirth());
+            values.put(COLUMN_EMAIL, student.getEmail());
+            values.put(COLUMN_DEPARTMENT, student.getDepartment());
+            values.put(COLUMN_GPA, student.getGpa());
 
-        ContentValues values = new ContentValues();
-        values.put("first_name", student.getFirstName());
-        values.put("last_name", student.getLastName());
-        values.put("date_of_birth", student.getDateOfBirth());
-        values.put("email", student.getEmail());
-        values.put("department", student.getDepartment());
-        values.put("gpa", student.getGpa());
-
-        long id = db.insert("students", null, values);
-        db.close();
-        return id;
+            return db.insert(TABLE_STUDENTS, null, values);
+        }
     }
 
     @Override
     public Student getStudentById(long id) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        try (SQLiteDatabase db = dbHelper.getReadableDatabase();
+             Cursor cursor = db.query(
+                     TABLE_STUDENTS,
+                     null,
+                     COLUMN_ID + " = ?",
+                     new String[]{String.valueOf(id)},
+                     null, null, null)) {
 
-        Cursor cursor = db.query(
-                "students",
-                null,
-                "id = ?",
-                new String[]{String.valueOf(id)},
-                null, null, null
-        );
-
-        Student student = null;
-        if (cursor != null && cursor.moveToFirst()) {
-            student = extractStudentFromCursor(cursor);
-            cursor.close();
-        }
-
-        db.close();
-        return student;
-    }
-
-    @Override
-    public List<Student> getAllStudents() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("students", null, null, null, null, null, null);
-
-        List<Student> students = new ArrayList<>();
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Student student = extractStudentFromCursor(cursor);
-                if (student != null) {
-                    students.add(student);
-                }
-            } while (cursor.moveToNext());
-
-            cursor.close();
-        }
-
-        db.close();
-        return students;
-    }
-
-    private Student extractStudentFromCursor(Cursor cursor) {
-        int idIndex = cursor.getColumnIndex("id");
-        int firstNameIndex = cursor.getColumnIndex("first_name");
-        int lastNameIndex = cursor.getColumnIndex("last_name");
-        int dateOfBirthIndex = cursor.getColumnIndex("date_of_birth");
-        int emailIndex = cursor.getColumnIndex("email");
-        int departmentIndex = cursor.getColumnIndex("department");
-        int gpaIndex = cursor.getColumnIndex("gpa");
-
-        if (idIndex >= 0 && firstNameIndex >= 0 && lastNameIndex >= 0 && dateOfBirthIndex >= 0 && emailIndex >= 0) {
-            long id = cursor.getLong(idIndex);
-            String firstName = cursor.getString(firstNameIndex);
-            String lastName = cursor.getString(lastNameIndex);
-            String dateOfBirth = cursor.getString(dateOfBirthIndex);
-            String email = cursor.getString(emailIndex);
-            String department = cursor.getString(departmentIndex);
-            double gpa = cursor.getDouble(gpaIndex);
-
-            return new Student(id, firstName, lastName, dateOfBirth, email, department, gpa);
+            if (cursor.moveToFirst()) {
+                return extractStudentFromCursor(cursor);
+            }
         }
         return null;
     }
 
     @Override
+    public List<Student> getAllStudents() {
+        List<Student> students = new ArrayList<>();
+        try (SQLiteDatabase db = dbHelper.getReadableDatabase();
+             Cursor cursor = db.query(TABLE_STUDENTS, null, null, null, null, null, null)) {
+
+            while (cursor.moveToNext()) {
+                students.add(extractStudentFromCursor(cursor));
+            }
+        }
+        return students;
+    }
+
+    @Override
     public boolean updateStudent(Student student) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_FIRST_NAME, student.getFirstName());
+            values.put(COLUMN_LAST_NAME, student.getLastName());
+            values.put(COLUMN_DATE_OF_BIRTH, student.getDateOfBirth());
+            values.put(COLUMN_EMAIL, student.getEmail());
+            values.put(COLUMN_DEPARTMENT, student.getDepartment());
+            values.put(COLUMN_GPA, student.getGpa());
 
-        ContentValues values = new ContentValues();
-        values.put("first_name", student.getFirstName());
-        values.put("last_name", student.getLastName());
-        values.put("date_of_birth", student.getDateOfBirth());
-        values.put("email", student.getEmail());
-        values.put("department", student.getDepartment());
-        values.put("gpa", student.getGpa());
+            int rowsUpdated = db.update(
+                    TABLE_STUDENTS,
+                    values,
+                    COLUMN_ID + " = ?",
+                    new String[]{String.valueOf(student.getId())}
+            );
 
-        int rowsUpdated = db.update(
-                "students",
-                values,
-                "id = ?",
-                new String[]{String.valueOf(student.getId())}
-        );
-
-        db.close();
-        return rowsUpdated > 0;
+            return rowsUpdated > 0;
+        }
     }
 
     @Override
     public boolean deleteStudent(long id) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+            int rowsDeleted = db.delete(
+                    TABLE_STUDENTS,
+                    COLUMN_ID + " = ?",
+                    new String[]{String.valueOf(id)}
+            );
 
-        int rowsDeleted = db.delete(
-                "students",
-                "id = ?",
-                new String[]{String.valueOf(id)}
-        );
-
-        db.close();
-        return rowsDeleted > 0;
+            return rowsDeleted > 0;
+        }
     }
 }

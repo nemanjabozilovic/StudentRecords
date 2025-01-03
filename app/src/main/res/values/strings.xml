@@ -19,4 +19,8 @@
     <string name="button_assign_student">Assign Student To Course</string>
     <string name="button_assign">Assign</string>
     <string name="action_sort">Sort By GPA</string>
+    <string name="heading_add_course">Add Course</string>
+    <string name="heading_add_student">Add Student</string>
+    <string name="heading_assign_student">Assign Student to Course</string>
+    <string name="heading_courses">Courses</string>
 </resources>

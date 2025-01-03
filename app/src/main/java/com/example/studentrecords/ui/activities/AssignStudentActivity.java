@@ -1,5 +1,6 @@
 package com.example.studentrecords.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,11 +22,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AssignStudentActivity extends AppCompatActivity {
     private Spinner spinnerStudents;
     private Spinner spinnerCourses;
-    private Button btnAssign;
     private StudentsUseCase studentsUseCase;
     private CoursesUseCase coursesUseCase;
     private Map<String, Long> studentNameToIdMap;
@@ -35,10 +36,11 @@ public class AssignStudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_student);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         spinnerStudents = findViewById(R.id.spinnerStudents);
         spinnerCourses = findViewById(R.id.spinnerCourses);
-        btnAssign = findViewById(R.id.btnAssign);
+        Button btnAssign = findViewById(R.id.btnAssign);
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         studentsUseCase = new StudentsUseCase(new StudentsRepository(dbHelper));
@@ -59,6 +61,7 @@ public class AssignStudentActivity extends AppCompatActivity {
 
                 if (coursesUseCase.assignStudentToCourse(courseId, studentId)) {
                     Toast.makeText(AssignStudentActivity.this, "Student assigned to course", Toast.LENGTH_SHORT).show();
+                    redirectToCoursesActivity();
                 } else {
                     Toast.makeText(AssignStudentActivity.this, "Error assigning student to course", Toast.LENGTH_SHORT).show();
                 }
@@ -109,5 +112,12 @@ public class AssignStudentActivity extends AppCompatActivity {
             names.add(course.getCourseName());
         }
         return names;
+    }
+
+    private void redirectToCoursesActivity() {
+        Intent intent = new Intent(AssignStudentActivity.this, CoursesActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

@@ -17,6 +17,8 @@ import com.example.studentrecords.data.repositories.CoursesRepository;
 import com.example.studentrecords.domain.usecases.implementation.CoursesUseCase;
 import com.example.studentrecords.ui.adapters.CoursesAdapter;
 
+import java.util.Objects;
+
 public class CoursesActivity extends AppCompatActivity {
     private CoursesAdapter courseAdapter;
     private CoursesUseCase courseUseCase;
@@ -25,6 +27,7 @@ public class CoursesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         RecyclerView recyclerView = findViewById(R.id.rvCourses);
         Button btnAddCourse = findViewById(R.id.btnAddCourse);

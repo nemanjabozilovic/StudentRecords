@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CoursesRepository implements ICoursesRepository {
+    private static final String TABLE_COURSES = "courses";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_COURSE_NAME = "course_name";
+    private static final String COLUMN_STUDENT_ID = "student_id";
+
     private final DatabaseHelper dbHelper;
 
     public CoursesRepository(DatabaseHelper dbHelper) {
@@ -19,105 +24,83 @@ public class CoursesRepository implements ICoursesRepository {
     }
 
     private Course extractCourseFromCursor(Cursor cursor) {
-        int idIndex = cursor.getColumnIndex("id");
-        int courseNameIndex = cursor.getColumnIndex("course_name");
-        int courseStudentIdIndex = cursor.getColumnIndex("student_id");
+        long id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID));
+        String courseName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COURSE_NAME));
+        Long studentId = cursor.isNull(cursor.getColumnIndexOrThrow(COLUMN_STUDENT_ID))
+                ? null
+                : cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_STUDENT_ID));
 
-        if (idIndex >= 0 && courseNameIndex >= 0 && courseStudentIdIndex >= 0) {
-            long id = cursor.getLong(idIndex);
-            String courseName = cursor.getString(courseNameIndex);
-            Long courseStudentId = cursor.getLong(courseStudentIdIndex);
+        return new Course(id, courseName, studentId);
+    }
 
-            return new Course(id, courseName, courseStudentId);
+    @Override
+    public long addCourse(Course course) {
+        try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_COURSE_NAME, course.getCourseName());
+            values.put(COLUMN_STUDENT_ID, course.getStudentId());
+            return db.insert(TABLE_COURSES, null, values);
+        }
+    }
+
+    @Override
+    public Course getCourseById(long id) {
+        try (SQLiteDatabase db = dbHelper.getReadableDatabase();
+             Cursor cursor = db.query(
+                     TABLE_COURSES,
+                     null,
+                     COLUMN_ID + " = ?",
+                     new String[]{String.valueOf(id)},
+                     null, null, null)) {
+
+            if (cursor.moveToFirst()) {
+                return extractCourseFromCursor(cursor);
+            }
         }
         return null;
     }
 
     @Override
-    public long addCourse(Course course) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put("course_name", course.getCourseName());
-
-        long id = db.insert("courses", null, values);
-        db.close();
-        return id;
-    }
-
-    @Override
-    public Course getCourseById(long id) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        Cursor cursor = db.query(
-                "courses",
-                null,
-                "id = ?",
-                new String[]{String.valueOf(id)},
-                null, null, null
-        );
-
-        Course course = null;
-        if (cursor != null && cursor.moveToFirst()) {
-            course = extractCourseFromCursor(cursor);
-            cursor.close();
-        }
-
-        db.close();
-        return course;
-    }
-
-    @Override
     public List<Course> getAllCourses() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("courses", null, null, null, null, null, null);
-
         List<Course> courses = new ArrayList<>();
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Course course = extractCourseFromCursor(cursor);
-                if (course != null) {
-                    courses.add(course);
-                }
-            } while (cursor.moveToNext());
+        try (SQLiteDatabase db = dbHelper.getReadableDatabase();
+             Cursor cursor = db.query(TABLE_COURSES, null, null, null, null, null, null)) {
 
-            cursor.close();
+            while (cursor.moveToNext()) {
+                courses.add(extractCourseFromCursor(cursor));
+            }
         }
-
-        db.close();
         return courses;
     }
 
     @Override
     public boolean updateCourse(Course course) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_COURSE_NAME, course.getCourseName());
+            values.put(COLUMN_STUDENT_ID, course.getStudentId());
 
-        ContentValues values = new ContentValues();
-        values.put("course_name", course.getCourseName());
-        values.put("student_id", course.getStudentId());
+            int rowsUpdated = db.update(
+                    TABLE_COURSES,
+                    values,
+                    COLUMN_ID + " = ?",
+                    new String[]{String.valueOf(course.getId())}
+            );
 
-        int rowsUpdated = db.update(
-                "courses",
-                values,
-                "id = ?",
-                new String[]{String.valueOf(course.getId())}
-        );
-
-        db.close();
-        return rowsUpdated > 0;
+            return rowsUpdated > 0;
+        }
     }
 
     @Override
     public boolean deleteCourse(long id) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
+            int rowsDeleted = db.delete(
+                    TABLE_COURSES,
+                    COLUMN_ID + " = ?",
+                    new String[]{String.valueOf(id)}
+            );
 
-        int rowsDeleted = db.delete(
-                "courses",
-                "id = ?",
-                new String[]{String.valueOf(id)}
-        );
-
-        db.close();
-        return rowsDeleted > 0;
+            return rowsDeleted > 0;
+        }
     }
 }

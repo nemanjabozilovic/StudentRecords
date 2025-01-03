@@ -14,6 +14,8 @@ import com.example.studentrecords.data.models.Student;
 import com.example.studentrecords.data.repositories.StudentsRepository;
 import com.example.studentrecords.domain.usecases.implementation.StudentsUseCase;
 
+import java.util.Objects;
+
 public class AddStudentActivity extends AppCompatActivity {
     private EditText etFirstName, etLastName, etEmail, etDateOfBirth, etDepartment, etGPA;
     private StudentsUseCase studentsUseCase;
@@ -22,6 +24,7 @@ public class AddStudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_student);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         initializeUIElements();
 

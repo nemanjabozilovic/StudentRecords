@@ -14,6 +14,8 @@ import com.example.studentrecords.data.models.Course;
 import com.example.studentrecords.data.repositories.CoursesRepository;
 import com.example.studentrecords.domain.usecases.implementation.CoursesUseCase;
 
+import java.util.Objects;
+
 public class AddCourseActivity extends AppCompatActivity {
     private EditText etCourseName;
     private CoursesUseCase courseUseCase;
@@ -22,6 +24,7 @@ public class AddCourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_course);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         initializeUIElements();
         setUpListeners();
